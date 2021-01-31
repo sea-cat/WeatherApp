@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Weather App</string>
+    <string name="action_privacy_policy">Privacy Policy</string>
+    <string name="action_open_source_licences">Open Source Licences</string>
+
+    <string name="refresh_label">Refresh</string>
+
+    <string name="current_condition_label">Current Condition :</string>
+    <string name="temperature_label">Temperature :</string>
+    <string name="wind_speed_label">Wind Speed :</string>
+    <string name="wind_direction_label">Wind Direction :</string>
+    <string name="privacy_policy_url">https://openweather.co.uk/privacy-policy</string>
+    <string name="html_unable_to_load_link">Unable to load link</string>
+    <string name="error_no_connectivity">You are offline. Please check your network connection and try again.</string>
+    <string name="error_download">An error has occurred. Please try again later or contact your administrator.</string>
+</resources>
