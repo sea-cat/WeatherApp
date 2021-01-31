@@ -1,12 +1,10 @@
-package ro.seacat.weatherapp;
+package ro.seacat.weatherapp.api;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.google.gson.GsonBuilder;
 
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -18,7 +16,10 @@ public class APIClient {
   private static Retrofit retrofit = null;
   private static Retrofit retrofitImage = null;
 
-  static Retrofit getClient(Context context) {
+  private APIClient() {
+  }
+
+  public static Retrofit getClient(Context context) {
     if (retrofit == null)
       retrofit = new Retrofit.Builder()
           .baseUrl(BASE_URL)
@@ -38,7 +39,7 @@ public class APIClient {
     return retrofit;
   }
 
-  static Retrofit getImageClient(Context context) {
+  public static Retrofit getImageClient(Context context) {
     if (retrofitImage == null)
       retrofitImage = new Retrofit.Builder()
           .baseUrl(BASE_IMAGE_URL)

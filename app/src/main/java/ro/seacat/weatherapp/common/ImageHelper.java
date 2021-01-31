@@ -1,4 +1,4 @@
-package ro.seacat.weatherapp;
+package ro.seacat.weatherapp.common;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -11,7 +11,7 @@ import java.io.OutputStream;
 
 import okhttp3.ResponseBody;
 
-class ImageHelper {
+public class ImageHelper {
 
   public static final String IMAGE_DIRECTORY = "imageDir";
   public static final String IMAGE_EXTENSION_PNG = ".png";

@@ -1,4 +1,4 @@
-package ro.seacat.weatherapp;
+package ro.seacat.weatherapp.ui;
 
 import android.widget.Toast;
 

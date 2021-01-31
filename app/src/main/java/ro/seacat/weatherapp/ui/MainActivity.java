@@ -1,4 +1,4 @@
-package ro.seacat.weatherapp;
+package ro.seacat.weatherapp.ui;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
+import ro.seacat.weatherapp.R;
 import ro.seacat.weatherapp.databinding.ActivityMainBinding;
 
 public class MainActivity extends BaseActivity {
@@ -50,13 +51,13 @@ public class MainActivity extends BaseActivity {
       if (getPackageManager().queryIntentActivities(openPrivacyPolicyWebIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0)
         startActivity(openPrivacyPolicyWebIntent);
       else
-        Toast.makeText(this, R.string.html_unable_to_load_link, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.error_unable_to_load_link, Toast.LENGTH_LONG).show();
 
       return true;
     }
 
     if (id == R.id.action_open_source_licences) {
-      Toast.makeText(this, R.string.action_open_source_licences, Toast.LENGTH_LONG).show();
+      Toast.makeText(this, R.string.menu_action_open_source_licences, Toast.LENGTH_LONG).show();
       return true;
     }
 

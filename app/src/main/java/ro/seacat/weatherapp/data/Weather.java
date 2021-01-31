@@ -1,4 +1,4 @@
-package ro.seacat.weatherapp;
+package ro.seacat.weatherapp.data;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -7,6 +7,11 @@ public class Weather {
   @SerializedName("main")
   private String currentCondition;
   private String icon;
+
+  public Weather(String currentCondition, String icon) {
+    this.currentCondition = currentCondition;
+    this.icon = icon;
+  }
 
   public String getCurrentCondition() {
     return currentCondition;

@@ -1,11 +1,14 @@
-package ro.seacat.weatherapp;
+package ro.seacat.weatherapp.data;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class WeatherData {
+public class WeatherRaw {
 
   private List<Weather> weather;
-  private Main main;
+  @SerializedName("main")
+  private Temperature temperature;
   private Wind wind;
 
   public List<Weather> getWeather() {
@@ -16,12 +19,12 @@ public class WeatherData {
     this.weather = weather;
   }
 
-  public Main getMain() {
-    return main;
+  public Temperature getTemperature() {
+    return temperature;
   }
 
-  public void setMain(Main main) {
-    this.main = main;
+  public void setTemperature(Temperature temperature) {
+    this.temperature = temperature;
   }
 
   public Wind getWind() {

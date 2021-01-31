@@ -1,8 +1,8 @@
-package ro.seacat.weatherapp;
+package ro.seacat.weatherapp.api;
 
 import java.io.IOException;
 
-class NoConnectivityException extends IOException {
+public class NoConnectivityException extends IOException {
 
   @Override
   public String getMessage() {

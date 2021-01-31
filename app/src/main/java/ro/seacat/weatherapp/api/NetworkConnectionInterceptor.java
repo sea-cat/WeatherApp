@@ -1,4 +1,4 @@
-package ro.seacat.weatherapp;
+package ro.seacat.weatherapp.api;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

@@ -5,7 +5,7 @@
 
         <variable
             name="viewModel"
-            type="ro.seacat.weatherapp.MainActivityViewModel" />
+            type="ro.seacat.weatherapp.ui.MainActivityViewModel" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -55,7 +55,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@{viewModel.liveWeather.weather.get(0).currentCondition}"
+                        android:text="@{viewModel.liveWeather.currentCondition}"
                         tools:text="Windy" />
                 </LinearLayout>
 
@@ -77,7 +77,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@{String.valueOf(viewModel.liveWeather.main.temperature)}"
+                        app:temperature="@{viewModel.liveWeather.temperature}"
                         tools:text="1 C" />
                 </LinearLayout>
 
@@ -99,7 +99,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@{String.valueOf(viewModel.liveWeather.wind.speed)}"
+                        app:speed="@{viewModel.liveWeather.windSpeed}"
                         tools:text="20mph" />
                 </LinearLayout>
 
@@ -121,7 +121,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@{String.valueOf(viewModel.liveWeather.wind.degrees)}"
+                        app:windDirection="@{viewModel.liveWeather.windDegrees}"
                         tools:text="North East" />
                 </LinearLayout>
             </RelativeLayout>
@@ -131,7 +131,7 @@
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_margin="@dimen/fab_margin"
             android:contentDescription="@string/refresh_label"

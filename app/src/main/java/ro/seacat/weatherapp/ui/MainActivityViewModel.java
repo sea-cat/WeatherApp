@@ -1,4 +1,4 @@
-package ro.seacat.weatherapp;
+package ro.seacat.weatherapp.ui;
 
 import android.app.Application;
 import android.graphics.Bitmap;
@@ -10,13 +10,23 @@ import java.util.concurrent.Executors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ro.seacat.weatherapp.BuildConfig;
+import ro.seacat.weatherapp.R;
+import ro.seacat.weatherapp.api.APIClient;
+import ro.seacat.weatherapp.api.APIInterface;
+import ro.seacat.weatherapp.api.NoConnectivityException;
+import ro.seacat.weatherapp.common.ImageHelper;
+import ro.seacat.weatherapp.data.WeatherData;
+import ro.seacat.weatherapp.data.WeatherDataTranslator;
+import ro.seacat.weatherapp.data.WeatherRaw;
 
-public class MainActivityViewModel extends AndroidViewModel implements Callback<WeatherData> {
+public class MainActivityViewModel extends AndroidViewModel implements Callback<WeatherRaw> {
 
   private final APIInterface apiInterface;
   private final APIInterface apiImageInterface;
@@ -33,15 +43,15 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
     getWeather();
   }
 
-  public MutableLiveData<WeatherData> getLiveWeather() {
+  public LiveData<WeatherData> getLiveWeather() {
     return liveWeather;
   }
 
-  public MutableLiveData<Bitmap> getLiveIcon() {
+  public LiveData<Bitmap> getLiveIcon() {
     return liveIcon;
   }
 
-  public MutableLiveData<Integer> getShowToast() {
+  public LiveData<Integer> getShowToast() {
     return showToast;
   }
 
@@ -72,13 +82,13 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
   }
 
   @Override
-  public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
+  public void onResponse(Call<WeatherRaw> call, Response<WeatherRaw> response) {
     if (!response.isSuccessful() || response.body() == null) {
       showToast.setValue(R.string.error_download);
       return;
     }
 
-    liveWeather.setValue(response.body());
+    liveWeather.setValue(WeatherDataTranslator.translate(response.body()));
 
     String icon = response.body().getWeather().get(0).getIcon() + ImageHelper.IMAGE_EXTENSION_PNG;
     if (ImageHelper.getFile(getApplication(), icon).exists())
@@ -88,7 +98,7 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
   }
 
   @Override
-  public void onFailure(Call<WeatherData> call, Throwable t) {
+  public void onFailure(Call<WeatherRaw> call, Throwable t) {
     showToast.setValue(t instanceof NoConnectivityException ? R.string.error_no_connectivity : R.string.error_download);
   }
 

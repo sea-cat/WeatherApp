@@ -1,15 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ro.seacat.weatherapp.MainActivity">
+    tools:context="ro.seacat.weatherapp.ui.MainActivity">
     <item
         android:id="@+id/action_privacy_policy"
         android:orderInCategory="100"
-        android:title="@string/action_privacy_policy"
+        android:title="@string/menu_action_privacy_policy"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_open_source_licences"
         android:orderInCategory="100"
-        android:title="@string/action_open_source_licences"
+        android:title="@string/menu_action_open_source_licences"
         app:showAsAction="never" />
 </menu>
