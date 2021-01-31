@@ -3,8 +3,6 @@ package ro.seacat.weatherapp.ui;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.os.Looper;
 
 import java.util.concurrent.Executors;
 
@@ -33,7 +31,7 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
 
   private final MutableLiveData<WeatherData> liveWeather = new MutableLiveData<>();
   private final MutableLiveData<Bitmap> liveIcon = new MutableLiveData<>();
-  private final MutableLiveData<Integer> showToast = new MutableLiveData<>();
+  private final MutableLiveData<Integer> displayError = new MutableLiveData<>();
 
   public MainActivityViewModel(@NonNull Application application) {
     super(application);
@@ -51,8 +49,8 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
     return liveIcon;
   }
 
-  public LiveData<Integer> getShowToast() {
-    return showToast;
+  public LiveData<Integer> getDisplayError() {
+    return displayError;
   }
 
   private void getWeather() {
@@ -70,7 +68,7 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
 
         Executors.newSingleThreadExecutor().execute(() -> {
           if (ImageHelper.writeResponseBody(getApplication(), response.body(), icon))
-            new Handler(Looper.getMainLooper()).post(() -> liveIcon.setValue(BitmapFactory.decodeFile(ImageHelper.getFile(getApplication(), icon).toString())));
+            liveIcon.postValue(BitmapFactory.decodeFile(ImageHelper.getFile(getApplication(), icon).toString()));
         });
       }
 
@@ -84,7 +82,7 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
   @Override
   public void onResponse(Call<WeatherRaw> call, Response<WeatherRaw> response) {
     if (!response.isSuccessful() || response.body() == null) {
-      showToast.setValue(R.string.error_download);
+      displayError.setValue(R.string.error_download);
       return;
     }
 
@@ -99,7 +97,7 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
 
   @Override
   public void onFailure(Call<WeatherRaw> call, Throwable t) {
-    showToast.setValue(t instanceof NoConnectivityException ? R.string.error_no_connectivity : R.string.error_download);
+    displayError.setValue(t instanceof NoConnectivityException ? R.string.error_no_connectivity : R.string.error_download);
   }
 
 }

@@ -29,7 +29,7 @@ public class MainActivity extends BaseActivity {
     binding.setLifecycleOwner(this);
     binding.setViewModel(viewModel);
 
-    viewModel.getShowToast().observe(this, stringId -> {
+    viewModel.getDisplayError().observe(this, stringId -> {
 //      showToast(stringId);
       Snackbar.make(binding.container, stringId, Snackbar.LENGTH_LONG).show();
 
