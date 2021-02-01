@@ -12,9 +12,10 @@
     <string name="wind_direction_label">Wind Direction :</string>
     <string name="refresh_label">Refresh</string>
 
+    <string name="error_no_relevant_data">There is no previous data available.\nRefresh to get the latest.</string>
     <string name="error_unable_to_load_link">Unable to load link</string>
     <string name="error_no_connectivity">You are offline. Please check your network connection and try again.</string>
-    <string name="error_download">An error has occurred. Please try again later or contact your administrator.</string>
+    <string name="error_download">An error has occurred while trying to fetch new data.\nPlease try again later or contact your administrator.</string>
     <string name="error_not_available">n/a</string>
 
     <string name="value_degree_celsius">%1$d&#8451;</string>

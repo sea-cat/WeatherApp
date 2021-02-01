@@ -33,6 +33,9 @@ public class WeatherData {
   @ColumnInfo(name = "WE_LONGITUDE")
   public Double longitude;
 
+  @ColumnInfo(name = "WE_CITY_NAME")
+  public String cityName;
+
   @ColumnInfo(name = "WE_LAST_FETCHED_DATE")
   public Date lastFetched;
 }

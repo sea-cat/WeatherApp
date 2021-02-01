@@ -1,6 +1,7 @@
 package ro.seacat.weatherapp.common;
 
 import android.graphics.Bitmap;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -8,6 +9,11 @@ import androidx.databinding.BindingAdapter;
 import ro.seacat.weatherapp.R;
 
 public class BindingHelper {
+
+  @BindingAdapter({"android:visibility"})
+  public static void setVisibility(View view, boolean visible) {
+    view.setVisibility(visible ? View.VISIBLE : View.GONE);
+  }
 
   @BindingAdapter({"src"})
   public static void setBitmap(ImageView imageView, Bitmap bitmap) {

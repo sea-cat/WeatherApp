@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -28,6 +27,7 @@ public class MainActivity extends BaseActivity {
     binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
     binding.setLifecycleOwner(this);
     binding.setViewModel(viewModel);
+    binding.fab.setOnClickListener(v -> viewModel.getWeather(53.0349, -5.6234));
 
     viewModel.getDisplayError().observe(this, stringId -> {
 //      showToast(stringId);
@@ -45,19 +45,20 @@ public class MainActivity extends BaseActivity {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
+
     if (id == R.id.action_privacy_policy) {
       final Intent openPrivacyPolicyWebIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.privacy_policy_url)));
 
       if (getPackageManager().queryIntentActivities(openPrivacyPolicyWebIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0)
         startActivity(openPrivacyPolicyWebIntent);
       else
-        Toast.makeText(this, R.string.error_unable_to_load_link, Toast.LENGTH_LONG).show();
+        showToast(R.string.error_unable_to_load_link);
 
       return true;
     }
 
     if (id == R.id.action_open_source_licences) {
-      Toast.makeText(this, R.string.menu_action_open_source_licences, Toast.LENGTH_LONG).show();
+      showToast(R.string.menu_action_open_source_licences);
       return true;
     }
 

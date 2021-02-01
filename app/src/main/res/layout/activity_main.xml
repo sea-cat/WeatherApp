@@ -24,9 +24,20 @@
             android:elevation="3dp"
             android:padding="8dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="24dp"
+                android:textStyle="bold"
+                android:text="@string/error_no_relevant_data"
+                android:textSize="20sp"
+                android:visibility="@{!safeUnbox(viewModel.loaded)}" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="@{safeUnbox(viewModel.loaded)}">
 
                 <ImageView
                     android:id="@+id/icon"
@@ -127,6 +138,12 @@
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
+        <ProgressBar
+            android:layout_width="@dimen/progress_bar_size"
+            android:layout_height="@dimen/progress_bar_size"
+            android:layout_centerInParent="true"
+            android:visibility="@{safeUnbox(viewModel.loading)}" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
@@ -135,7 +152,8 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="@dimen/fab_margin"
             android:contentDescription="@string/refresh_label"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            android:enabled="@{!safeUnbox(viewModel.loading)}"
+            app:srcCompat="@drawable/ic_refresh" />
 
     </RelativeLayout>
 </layout>

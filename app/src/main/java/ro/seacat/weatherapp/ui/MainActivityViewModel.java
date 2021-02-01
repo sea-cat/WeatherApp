@@ -32,6 +32,7 @@ import ro.seacat.weatherapp.data.WeatherRaw;
 
 public class MainActivityViewModel extends AndroidViewModel implements Callback<WeatherRaw> {
 
+  private WeatherRepository repository; // todo - move everything
   private final APIInterface apiInterface;
   private final APIInterface apiImageInterface;
   private WeatherDao dao;
@@ -39,6 +40,8 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
   private final MutableLiveData<WeatherData> liveWeather = new MutableLiveData<>();
   private final MutableLiveData<Bitmap> liveIcon = new MutableLiveData<>();
   private final MutableLiveData<Integer> displayError = new MutableLiveData<>();
+  private final MutableLiveData<Boolean> loaded = new MutableLiveData<>(false);
+  private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
 
   public MainActivityViewModel(@NonNull Application application) {
     super(application);
@@ -47,7 +50,7 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
     apiImageInterface = APIClient.getImageClient(application).create(APIInterface.class);
     dao = Room.databaseBuilder(application, AppDatabase.class, "weatherapp").build().weatherDao();
 
-    getWeather(53.0349, -5.6234, false); //
+    getExistingWeather(53.0349, -5.6234);
   }
 
   public LiveData<WeatherData> getLiveWeather() {
@@ -62,17 +65,31 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
     return displayError;
   }
 
-  private void getWeather(double lat, double lon, boolean force) {
+  public LiveData<Boolean> getLoaded() {
+    return loaded;
+  }
+
+  public LiveData<Boolean> getLoading() {
+    return loading;
+  }
+
+  private void getExistingWeather(double lat, double lon) {
+    loading.postValue(true);
     Executors.newSingleThreadExecutor().execute(() -> {
       WeatherData weatherData = dao.findByLatLong(lat, lon);
-      if (!force && weatherData != null && TimeUnit.HOURS.convert(Math.abs(new Date().getTime() - weatherData.lastFetched.getTime()), TimeUnit.MILLISECONDS) <= 24) {
+      if (weatherData != null && TimeUnit.HOURS.convert(Math.abs(new Date().getTime() - weatherData.lastFetched.getTime()), TimeUnit.MILLISECONDS) <= 24) {
         liveWeather.postValue(weatherData);
         getIcon(weatherData.icon);
-        return;
+        loaded.postValue(true);
+        // todo - this was last fetched at date etc
       }
-
-      apiInterface.getByLatLong(lat, lon, BuildConfig.OPEN_WEATHER_KEY, APIClient.UNIT).enqueue(this);
+      loading.postValue(false);
     });
+  }
+
+  public void getWeather(double lat, double lon) {
+    loading.setValue(true);
+    apiInterface.getByLatLong(lat, lon, BuildConfig.OPEN_WEATHER_KEY, APIClient.UNIT).enqueue(this);
   }
 
   private void downloadImage(String icon) {
@@ -101,14 +118,17 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
   public void onResponse(Call<WeatherRaw> call, Response<WeatherRaw> response) {
     if (!response.isSuccessful() || response.body() == null) {
       displayError.setValue(R.string.error_download);
+      loading.setValue(false);
       return;
     }
 
     WeatherData weatherData = WeatherDataTranslator.translate(response.body());
     weatherData.lastFetched = new Date();
     liveWeather.setValue(weatherData);
+    loaded.setValue(true);
+    loading.setValue(false);
+
     Executors.newSingleThreadExecutor().execute(() -> {
-      Log.e("XXX", "trying to save data");
       dao.empty();
       dao.insert(weatherData);
     });
@@ -125,6 +145,7 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
 
   @Override
   public void onFailure(Call<WeatherRaw> call, Throwable t) {
+    loading.setValue(false);
     displayError.setValue(t instanceof NoConnectivityException ? R.string.error_no_connectivity : R.string.error_download);
   }
 

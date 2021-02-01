@@ -12,6 +12,8 @@ public class WeatherRaw {
   @SerializedName("main")
   private Temperature temperature;
   private Wind wind;
+  @SerializedName("name")
+  private String cityName;
 
   public Coordinates getCoordinates() {
     return coordinates;
@@ -43,5 +45,13 @@ public class WeatherRaw {
 
   public void setWind(Wind wind) {
     this.wind = wind;
+  }
+
+  public String getCityName() {
+    return cityName;
+  }
+
+  public void setCityName(String cityName) {
+    this.cityName = cityName;
   }
 }
