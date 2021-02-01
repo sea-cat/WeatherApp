@@ -16,22 +16,22 @@ public class WeatherData {
   public String currentCondition;
 
   @ColumnInfo(name = "WE_TEMPERATURE")
-  public Float temperature;
+  public Double temperature;
 
   @ColumnInfo(name = "WE_WIND_SPEED")
-  public Float windSpeed;
+  public Double windSpeed;
 
   @ColumnInfo(name = "WE_WIND_DEGREES")
-  public Float windDegrees;
+  public Double windDegrees;
 
   @ColumnInfo(name = "WE_ICON")
   public String icon;
 
   @ColumnInfo(name = "WE_LATITUDE")
-  public Float latitude;
+  public Double latitude;
 
   @ColumnInfo(name = "WE_LONGITUDE")
-  public Float longitude;
+  public Double longitude;
 
   @ColumnInfo(name = "WE_LAST_FETCHED_DATE")
   public Date lastFetched;

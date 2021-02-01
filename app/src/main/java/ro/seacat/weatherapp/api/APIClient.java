@@ -11,7 +11,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIClient {
 
   private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/";
-  private static final String BASE_IMAGE_URL = "http://openweathermap.org/";
+  public static final String BASE_IMAGE_URL = "http://openweathermap.org/";
+
+  public static final String ICON_URL ="http://openweathermap.org/img/w/";
+  public static final String UNIT ="metric";
 
   private static Retrofit retrofit = null;
   private static Retrofit retrofitImage = null;

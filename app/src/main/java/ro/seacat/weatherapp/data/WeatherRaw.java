@@ -6,10 +6,20 @@ import java.util.List;
 
 public class WeatherRaw {
 
+  @SerializedName("coord")
+  private Coordinates coordinates;
   private List<Weather> weather;
   @SerializedName("main")
   private Temperature temperature;
   private Wind wind;
+
+  public Coordinates getCoordinates() {
+    return coordinates;
+  }
+
+  public void setCoordinates(Coordinates coordinates) {
+    this.coordinates = coordinates;
+  }
 
   public List<Weather> getWeather() {
     return weather;

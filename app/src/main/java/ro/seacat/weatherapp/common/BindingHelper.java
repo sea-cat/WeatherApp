@@ -18,14 +18,14 @@ public class BindingHelper {
   }
 
   @BindingAdapter({"temperature"})
-  public static void setTemperature(TextView view, Float temperature) {
+  public static void setTemperature(TextView view, Double temperature) {
     view.setText(temperature == null
         ? view.getResources().getString(R.string.error_not_available)
         : view.getResources().getString(R.string.value_degree_celsius, Math.round(temperature)));
   }
 
   @BindingAdapter({"speed"})
-  public static void setSpeed(TextView view, Float speed) {
+  public static void setSpeed(TextView view, Double speed) {
     //value comes down in metric, requirement was to display mph, so doing the transformation
     view.setText(speed == null
         ? view.getResources().getString(R.string.error_not_available)
@@ -33,7 +33,7 @@ public class BindingHelper {
   }
 
   @BindingAdapter({"windDirection"})
-  public static void setWindDirection(TextView view, Float degrees) {
+  public static void setWindDirection(TextView view, Double degrees) {
     int directionTextId;
     if (degrees == null || degrees > 360 || degrees < 0)
       directionTextId = R.string.error_not_available;

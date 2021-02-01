@@ -5,17 +5,17 @@ import com.google.gson.annotations.SerializedName;
 public class Temperature {
 
   @SerializedName("temp")
-  private Float temperature;
+  private Double temperature;
 
-  public Temperature(Float temperature) {
+  public Temperature(Double temperature) {
     this.temperature = temperature;
   }
 
-  public Float getTemperature() {
+  public Double getTemperature() {
     return temperature;
   }
 
-  public void setTemperature(Float temp) {
+  public void setTemperature(Double temp) {
     this.temperature = temp;
   }
 }

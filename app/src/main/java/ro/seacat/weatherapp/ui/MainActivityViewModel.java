@@ -3,13 +3,17 @@ package ro.seacat.weatherapp.ui;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
+import java.util.Date;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.Room;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,6 +24,8 @@ import ro.seacat.weatherapp.api.APIClient;
 import ro.seacat.weatherapp.api.APIInterface;
 import ro.seacat.weatherapp.api.NoConnectivityException;
 import ro.seacat.weatherapp.common.ImageHelper;
+import ro.seacat.weatherapp.data.AppDatabase;
+import ro.seacat.weatherapp.data.WeatherDao;
 import ro.seacat.weatherapp.data.WeatherData;
 import ro.seacat.weatherapp.data.WeatherDataTranslator;
 import ro.seacat.weatherapp.data.WeatherRaw;
@@ -28,6 +34,7 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
 
   private final APIInterface apiInterface;
   private final APIInterface apiImageInterface;
+  private WeatherDao dao;
 
   private final MutableLiveData<WeatherData> liveWeather = new MutableLiveData<>();
   private final MutableLiveData<Bitmap> liveIcon = new MutableLiveData<>();
@@ -38,7 +45,9 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
 
     apiInterface = APIClient.getClient(application).create(APIInterface.class);
     apiImageInterface = APIClient.getImageClient(application).create(APIInterface.class);
-    getWeather();
+    dao = Room.databaseBuilder(application, AppDatabase.class, "weatherapp").build().weatherDao();
+
+    getWeather(53.0349, -5.6234, false); //
   }
 
   public LiveData<WeatherData> getLiveWeather() {
@@ -53,12 +62,21 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
     return displayError;
   }
 
-  private void getWeather() {
-    apiInterface.getByCity("Belfast, UK", BuildConfig.OPEN_WEATHER_KEY, "metric").enqueue(this);
+  private void getWeather(double lat, double lon, boolean force) {
+    Executors.newSingleThreadExecutor().execute(() -> {
+      WeatherData weatherData = dao.findByLatLong(lat, lon);
+      if (!force && weatherData != null && TimeUnit.HOURS.convert(Math.abs(new Date().getTime() - weatherData.lastFetched.getTime()), TimeUnit.MILLISECONDS) <= 24) {
+        liveWeather.postValue(weatherData);
+        getIcon(weatherData.icon);
+        return;
+      }
+
+      apiInterface.getByLatLong(lat, lon, BuildConfig.OPEN_WEATHER_KEY, APIClient.UNIT).enqueue(this);
+    });
   }
 
   private void downloadImage(String icon) {
-    apiImageInterface.downloadImage(icon).enqueue(new Callback<ResponseBody>() {
+    apiInterface.downloadImage(APIClient.BASE_IMAGE_URL + icon).enqueue(new Callback<ResponseBody>() {
       @Override
       public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
         if (!response.isSuccessful() || response.body() == null) {
@@ -86,11 +104,21 @@ public class MainActivityViewModel extends AndroidViewModel implements Callback<
       return;
     }
 
-    liveWeather.setValue(WeatherDataTranslator.translate(response.body()));
+    WeatherData weatherData = WeatherDataTranslator.translate(response.body());
+    weatherData.lastFetched = new Date();
+    liveWeather.setValue(weatherData);
+    Executors.newSingleThreadExecutor().execute(() -> {
+      Log.e("XXX", "trying to save data");
+      dao.empty();
+      dao.insert(weatherData);
+    });
+    getIcon(response.body().getWeather().get(0).getIcon());
+  }
 
-    String icon = response.body().getWeather().get(0).getIcon() + ImageHelper.IMAGE_EXTENSION_PNG;
+  private void getIcon(String iconName) {
+    String icon = iconName + ImageHelper.IMAGE_EXTENSION_PNG;
     if (ImageHelper.getFile(getApplication(), icon).exists())
-      liveIcon.setValue(BitmapFactory.decodeFile(ImageHelper.getFile(getApplication(), icon).toString()));
+      liveIcon.postValue(BitmapFactory.decodeFile(ImageHelper.getFile(getApplication(), icon).toString()));
     else
       downloadImage(icon);
   }

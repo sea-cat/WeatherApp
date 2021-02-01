@@ -1,8 +1,5 @@
 package ro.seacat.weatherapp.data;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 public class WeatherDataTranslator {
 
   public static WeatherData translate(WeatherRaw weatherRaw) {
@@ -10,6 +7,11 @@ public class WeatherDataTranslator {
       return null;
 
     WeatherData weatherData = new WeatherData();
+    if (weatherRaw.getCoordinates() != null) {
+      weatherData.longitude = weatherRaw.getCoordinates().getLongitude();
+      weatherData.latitude = weatherRaw.getCoordinates().getLatitude();
+    }
+
     if (weatherRaw.getWeather() != null && !weatherRaw.getWeather().isEmpty()) {
       weatherData.currentCondition = weatherRaw.getWeather().get(0).getCurrentCondition();
       weatherData.icon = weatherRaw.getWeather().get(0).getIcon();
@@ -25,22 +27,5 @@ public class WeatherDataTranslator {
     }
 
     return weatherData;
-  }
-
-  public static WeatherRaw translate(WeatherData weatherData) {
-    if (weatherData == null)
-      return null;
-
-    WeatherRaw weatherRaw = new WeatherRaw();
-    if (weatherData.currentCondition != null || weatherData.icon != null)
-      weatherRaw.setWeather(new ArrayList<>(Collections.singletonList(new Weather(weatherData.currentCondition, weatherData.icon))));
-
-    if (weatherData.temperature != null)
-      weatherRaw.setTemperature(new Temperature(weatherData.temperature));
-
-    if (weatherData.windSpeed != null || weatherData.windDegrees != null)
-      weatherRaw.setWind(new Wind(weatherData.windSpeed, weatherData.windDegrees));
-
-    return weatherRaw;
   }
 }
