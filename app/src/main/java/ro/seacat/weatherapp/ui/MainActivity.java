@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import ro.seacat.weatherapp.R;
@@ -30,8 +28,8 @@ public class MainActivity extends BaseActivity {
     binding.fab.setOnClickListener(v -> viewModel.getWeather(53.0349, -5.6234));
 
     viewModel.getDisplayError().observe(this, stringId -> {
-//      showToast(stringId);
-      Snackbar.make(binding.container, stringId, Snackbar.LENGTH_LONG).show();
+      //      showToast(stringId);
+      showSnackBar(binding.container, stringId) ;
 
     });
   }

@@ -28,4 +28,7 @@
     <string name="value_south_west">South West</string>
     <string name="value_west">West</string>
     <string name="value_north_west">North West</string>
+
+    <string name="ok">OK</string>
+    <string name="dismiss">dismiss</string>
 </resources>
