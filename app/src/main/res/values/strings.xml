@@ -16,6 +16,7 @@
     <string name="error_unable_to_load_link">Unable to load link</string>
     <string name="error_no_connectivity">You are offline. Please check your network connection and try again.</string>
     <string name="error_download">An error has occurred while trying to fetch new data.\nPlease try again later or contact your administrator.</string>
+    <string name="error_location_permission_needed">Please enable the location permission to load weather data.</string>
     <string name="error_not_available">n/a</string>
 
     <string name="value_degree_celsius">%1$d&#8451;</string>
@@ -30,5 +31,10 @@
     <string name="value_north_west">North West</string>
 
     <string name="ok">OK</string>
-    <string name="dismiss">dismiss</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="cancel">Cancel</string>
+    <string name="settings">Settings</string>
+
+    <string name="location_permission_title">Location permission required</string>
+    <string name="location_permission_rationale">This application needs your location permission to retrieve weather information that\'s relevant to you.\nPlease enable this permission.</string>
 </resources>
