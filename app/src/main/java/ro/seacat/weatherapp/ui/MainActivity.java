@@ -27,20 +27,20 @@ public class MainActivity extends BaseActivity {
 
     viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
     viewModel.getDisplayError().observe(this, stringId -> showSnackBar(binding.container, stringId));
-    viewModel.getLiveWeather().observe(this, weatherData -> {
+    viewModel.getLiveWeather().observe(this, weatherData ->
         Picasso.get()
             .load(viewModel.getWeatherIconUrl(weatherData.icon))
             .placeholder(R.drawable.animation_progress)
             .error(R.drawable.ic_error)
-            .into(binding.icon);
-    });
+            .into(binding.icon)
+    );
 
     binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
     binding.setLifecycleOwner(this);
     binding.setViewModel(viewModel);
     binding.fab.setOnClickListener(v -> checkLocationPermission());
 
-        viewModel.refreshWeatherData();
+    viewModel.refreshWeatherData();
   }
 
   @Override
@@ -71,6 +71,5 @@ public class MainActivity extends BaseActivity {
 
     return super.onOptionsItemSelected(item);
   }
-
 
 }

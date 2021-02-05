@@ -1,7 +1,6 @@
 package ro.seacat.weatherapp.ui;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import java.util.Date;
 
@@ -12,17 +11,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import ro.seacat.weatherapp.R;
 import ro.seacat.weatherapp.api.NoConnectivityException;
 import ro.seacat.weatherapp.api.WeatherAPI;
-import ro.seacat.weatherapp.common.ImageHelper;
 import ro.seacat.weatherapp.data.WeatherDao;
 import ro.seacat.weatherapp.data.WeatherRepository;
 import ro.seacat.weatherapp.data.pojo.WeatherData;
-import ro.seacat.weatherapp.data.pojo.WeatherRaw;
 
 @HiltViewModel
 public class MainActivityViewModel extends ViewModel {
@@ -37,13 +31,11 @@ public class MainActivityViewModel extends ViewModel {
   private final MutableLiveData<Boolean> loaded = new MutableLiveData<>(false);
   private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
 
-  public ImageHelper imageHelper;
   private final CompositeDisposable disposables = new CompositeDisposable();
 
   @Inject
-  public MainActivityViewModel(WeatherRepository repository, ImageHelper imageHelper) {
+  public MainActivityViewModel(WeatherRepository repository) {
     this.repository = repository;
-    this.imageHelper = imageHelper;
     //    apiInterface = APIClient.getClient(applicationContext).create(WeatherAPI.class);
     //    dao = Room.databaseBuilder(applicationContext, AppDatabase.class, "weatherapp").build().weatherDao();
 

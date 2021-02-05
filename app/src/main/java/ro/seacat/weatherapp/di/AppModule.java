@@ -18,7 +18,6 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ro.seacat.weatherapp.api.NetworkConnectionInterceptor;
 import ro.seacat.weatherapp.api.WeatherAPI;
-import ro.seacat.weatherapp.common.ImageHelper;
 import ro.seacat.weatherapp.data.AppDatabase;
 import ro.seacat.weatherapp.data.WeatherDao;
 
@@ -59,10 +58,5 @@ public class AppModule {
   @Provides
   public WeatherDao provideWeatherDao(AppDatabase database) {
     return database.weatherDao();
-  }
-
-  @Provides
-  public ImageHelper provideImageHelper(@ApplicationContext Context applicationContext) {
-    return new ImageHelper(applicationContext);
   }
 }
