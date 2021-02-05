@@ -150,4 +150,8 @@ public class MainActivityViewModel extends ViewModel {
     //    else
     //      downloadImage(icon);
   }
+
+  public String getWeatherIconUrl(String weatherDataIcon) {
+    return WeatherAPI.ICON_URL + weatherDataIcon + ".png";
+  }
 }
