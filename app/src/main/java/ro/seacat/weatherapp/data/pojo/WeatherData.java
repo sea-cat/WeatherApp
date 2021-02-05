@@ -1,4 +1,4 @@
-package ro.seacat.weatherapp.data;
+package ro.seacat.weatherapp.data.pojo;
 
 import java.util.Date;
 

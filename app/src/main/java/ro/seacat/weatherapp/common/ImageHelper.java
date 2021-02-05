@@ -9,15 +9,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import okhttp3.ResponseBody;
 
+@Singleton
 public class ImageHelper {
 
   public static final String IMAGE_DIRECTORY = "imageDir";
   public static final String IMAGE_EXTENSION_PNG = ".png";
 
-  public static boolean writeResponseBody(Context context, ResponseBody body, String path) {
-    File file = getFile(context, path);
+  private Context context;
+
+  @Inject
+  public ImageHelper(Context context) {
+    this.context = context;
+  }
+
+  public boolean writeResponseBody(ResponseBody body, String path) {
+    File file = getFile(path);
     byte[] fileReader = new byte[4096];
 
     try (InputStream inputStream = body.byteStream(); OutputStream outputStream = new FileOutputStream(file)) {
@@ -39,7 +50,7 @@ public class ImageHelper {
     }
   }
 
-  public static File getFile(Context context, String fileName) {
+  public File getFile(String fileName) {
     return new File(new ContextWrapper(context).getDir(IMAGE_DIRECTORY, Context.MODE_PRIVATE), fileName);
   }
 }

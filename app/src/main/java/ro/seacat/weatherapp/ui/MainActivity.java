@@ -9,9 +9,11 @@ import android.view.MenuItem;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
+import dagger.hilt.android.AndroidEntryPoint;
 import ro.seacat.weatherapp.R;
 import ro.seacat.weatherapp.databinding.ActivityMainBinding;
 
+@AndroidEntryPoint
 public class MainActivity extends BaseActivity {
 
   private MainActivityViewModel viewModel;
@@ -22,16 +24,14 @@ public class MainActivity extends BaseActivity {
     super.onCreate(savedInstanceState);
 
     viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
+    viewModel.getDisplayError().observe(this, stringId -> showSnackBar(binding.container, stringId));
     binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
     binding.setLifecycleOwner(this);
     binding.setViewModel(viewModel);
-    binding.fab.setOnClickListener(v -> viewModel.getWeather(53.0349, -5.6234));
+    binding.fab.setOnClickListener(v -> checkLocationPermission());
 
-    viewModel.getDisplayError().observe(this, stringId -> {
-      //      showToast(stringId);
-      showSnackBar(binding.container, stringId) ;
-
-    });
+//    viewModel.refreshWeatherData();
   }
 
   @Override

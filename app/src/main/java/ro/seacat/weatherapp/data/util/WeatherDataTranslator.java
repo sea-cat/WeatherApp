@@ -1,8 +1,19 @@
-package ro.seacat.weatherapp.data;
+package ro.seacat.weatherapp.data.util;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import ro.seacat.weatherapp.data.pojo.WeatherData;
+import ro.seacat.weatherapp.data.pojo.WeatherRaw;
+
+@Singleton
 public class WeatherDataTranslator {
 
-  public static WeatherData translate(WeatherRaw weatherRaw) {
+  @Inject
+  public WeatherDataTranslator() {
+  }
+
+  public WeatherData translate(WeatherRaw weatherRaw) {
     if (weatherRaw == null)
       return null;
 
