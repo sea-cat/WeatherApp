@@ -122,14 +122,15 @@ public class MainActivityViewModel extends ViewModel {
   }
 
   private void onSuccess(WeatherData weatherData, boolean fromStorage) {
-    Log.e("XXX", "onSuccess: " + "!!!");
     liveWeather.postValue(weatherData);
     loading.postValue(false);
     loaded.postValue(true);
+
     displayLastUpdatedMessage.postValue(!fromStorage ? null : applicationContext.getResources().getString(R.string.warning_last_fetched,
         weatherData.cityName,
         DateFormat.getTimeFormat(applicationContext).format(weatherData.lastFetched),
         DateFormat.getMediumDateFormat(applicationContext).format(weatherData.lastFetched)));
+
     if (!fromStorage)
       hideSnackBar.postValue(null);
   }

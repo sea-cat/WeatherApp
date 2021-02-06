@@ -8,6 +8,7 @@ import javax.inject.Singleton;
 
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import ro.seacat.weatherapp.BuildConfig;
@@ -31,18 +32,15 @@ public class WeatherRepository {
   }
 
   public Maybe<WeatherData> getStoredWeather(double lat, double lon) {
-    return weatherDao.findByLatLong(lat, lon)
-        .subscribeOn(Schedulers.io())
-        .filter(weatherData -> {
-          boolean isValid = TimeUnit.HOURS.convert(Math.abs(new Date().getTime() - weatherData.lastFetched.getTime()), TimeUnit.MILLISECONDS) <= 24;
-          if (!isValid)
-            weatherDao.deleteByLatLong(weatherData.latitude, weatherData.longitude);
-          return isValid;
-        });
+    return getStoredWeather(weatherDao.findByLatLong(lat, lon));
   }
 
   public Maybe<WeatherData> getStoredWeather() {
-    return weatherDao.getData()
+    return getStoredWeather(weatherDao.getData());
+  }
+
+  public Maybe<WeatherData> getStoredWeather(Single<WeatherData> weatherDataSingle) {
+    return weatherDataSingle
         .subscribeOn(Schedulers.io())
         .filter(weatherData -> {
           boolean isValid = TimeUnit.HOURS.convert(Math.abs(new Date().getTime() - weatherData.lastFetched.getTime()), TimeUnit.MILLISECONDS) <= 24;
@@ -69,4 +67,5 @@ public class WeatherRepository {
   public void clearDisposable() {
     disposables.clear();
   }
+
 }
