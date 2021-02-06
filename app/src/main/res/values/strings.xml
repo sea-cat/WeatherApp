@@ -17,6 +17,7 @@
     <string name="error_no_connectivity">You are offline. Please check your network connection and try again.</string>
     <string name="error_download">An error has occurred while trying to fetch new data. Please try again later or contact your administrator.</string>
     <string name="error_location_permission_needed">Please enable the location permission to load weather data.</string>
+    <string name="error_location_not_found">Location could not be established. Please turn on your location.</string>
     <string name="error_not_available">n/a</string>
     <string name="warning_last_fetched">"Last fetched for %s at %s on %s</string>
 

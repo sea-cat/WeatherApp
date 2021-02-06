@@ -1,5 +1,6 @@
 package ro.seacat.weatherapp.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -7,6 +8,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.squareup.picasso.Picasso;
 
 import androidx.databinding.DataBindingUtil;
@@ -20,23 +23,24 @@ public class MainActivity extends BaseActivity {
 
   private MainActivityViewModel viewModel;
   private ActivityMainBinding binding;
+  private FusedLocationProviderClient fusedLocationClient;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
     viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
     viewModel.getDisplayError().observe(this, stringId -> showSnackBar(binding.container, stringId));
     viewModel.getLiveWeather().observe(this, weatherData -> loadIcon(weatherData.icon));
-    viewModel.getHideSnackBar().observe(this, nothing -> hideSnackBar());
-
+    viewModel.getClearError().observe(this, nothing -> hideSnackBar());
 
     binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
     binding.setLifecycleOwner(this);
     binding.setViewModel(viewModel);
-    binding.fab.setOnClickListener(v -> viewModel.populateView());
+    binding.fab.setOnClickListener(v -> checkLocationPermission());
 
-    viewModel.populateView();
+    checkLocationPermission();
   }
 
   private void loadIcon(String icon) {
@@ -46,6 +50,27 @@ public class MainActivity extends BaseActivity {
         .placeholder(R.drawable.animation_progress)
         .error(R.drawable.ic_error)
         .into(binding.icon);
+  }
+
+  @SuppressLint("MissingPermission")
+  @Override
+  protected void locationPermissionGranted() {
+    super.locationPermissionGranted();
+    fusedLocationClient
+        .getLastLocation()
+        .addOnFailureListener(this, e -> showSnackBar(binding.container, R.string.error_location_not_found))
+        .addOnSuccessListener(this, location -> {
+          viewModel.populateView(location);
+          if (location == null)
+            showSnackBar(binding.container, R.string.error_location_not_found);
+        })
+    ;
+  }
+
+  @Override
+  protected void locationPermissionDenied() {
+    super.locationPermissionDenied();
+    viewModel.populateView(null);
   }
 
   @Override

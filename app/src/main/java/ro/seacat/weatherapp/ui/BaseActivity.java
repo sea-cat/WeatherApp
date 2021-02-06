@@ -41,7 +41,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     UIHelper.createDialog(this,
         R.string.location_permission_title, R.string.location_permission_rationale,
-        (dialog, which) -> createLocationPermissionRequest(), (dialog, which) -> dialog.dismiss());
+        (dialog, which) -> createLocationPermissionRequest(),
+        (dialog, which) -> {
+          locationPermissionDenied();
+          dialog.dismiss();
+        });
   }
 
   private void createLocationPermissionRequest() {
@@ -60,7 +64,6 @@ public abstract class BaseActivity extends AppCompatActivity {
   }
 
   protected void locationPermissionGranted() {
-    showToast("permission granted");
   }
 
   protected void locationPermissionDenied() {

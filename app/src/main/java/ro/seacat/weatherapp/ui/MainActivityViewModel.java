@@ -2,8 +2,13 @@ package ro.seacat.weatherapp.ui;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.text.format.DateFormat;
-import android.util.Log;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
+import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
@@ -23,13 +28,13 @@ public class MainActivityViewModel extends ViewModel {
 
   private final WeatherRepository repository;
   private final Application applicationContext;
+  private final FusedLocationProviderClient fusedLocationClient;
 
   private final MutableLiveData<WeatherData> liveWeather = new MutableLiveData<>();
   private final MutableLiveData<Bitmap> liveIcon = new MutableLiveData<>();
   private final MutableLiveData<Integer> displayError = new MutableLiveData<>();
   private final MutableLiveData<String> displayLastUpdatedMessage = new MutableLiveData<>();
-  private final MutableLiveData<Void> hideSnackBar = new MutableLiveData<>();
-  private final MutableLiveData<Boolean> loaded = new MutableLiveData<>(false);
+  private final MutableLiveData<Void> clearError = new MutableLiveData<>();
   private final MutableLiveData<Boolean> loading = new MutableLiveData<>(true);
 
   private final CompositeDisposable disposables = new CompositeDisposable();
@@ -38,6 +43,8 @@ public class MainActivityViewModel extends ViewModel {
   public MainActivityViewModel(WeatherRepository repository, Application applicationContext) {
     this.repository = repository;
     this.applicationContext = applicationContext;
+
+    fusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext);
   }
 
   public LiveData<WeatherData> getLiveWeather() {
@@ -56,12 +63,8 @@ public class MainActivityViewModel extends ViewModel {
     return displayLastUpdatedMessage;
   }
 
-  public LiveData<Void> getHideSnackBar() {
-    return hideSnackBar;
-  }
-
-  public LiveData<Boolean> getLoaded() {
-    return loaded;
+  public LiveData<Void> getClearError() {
+    return clearError;
   }
 
   public LiveData<Boolean> getLoading() {
@@ -73,26 +76,37 @@ public class MainActivityViewModel extends ViewModel {
     super.onCleared();
     repository.clearDisposable();
   }
+  //
+  //  public void fetchData(Location location) {
+  //    repository.fetchData(location)
+  //        .subscribeOn(Schedulers.io())
+  //    .subscribe();
+  //  }
 
-  public void populateView() {
-    boolean location = true;
+  public void populateView(Location location) {
     loading.setValue(true);
 
-    if (location)
-      refreshWeatherData(53.0349, -5.6234);
-    else if (liveWeather.getValue() == null)
+    if (location != null && location.getLatitude() != 0.0) {
+      normaliseLocation(location);
+      refreshWeatherData(location);
+    } else if (liveWeather.getValue() == null)
       getExistingWeather();
   }
 
-  private void refreshWeatherData(double lat, double lon) {
+  private void normaliseLocation(Location location) {
+    location.setLatitude(Double.parseDouble(new DecimalFormat("#0.####").format(location.getLatitude())));
+    location.setLongitude(Double.parseDouble(new DecimalFormat("#0.####").format(location.getLongitude())));
+  }
+
+  private void refreshWeatherData(Location location) {
     disposables.add(
         repository
-            .getNetworkWeather(lat, lon)
+            .getNetworkWeather(location.getLatitude(), location.getLongitude())
             .subscribe(
                 weatherData -> onSuccess(weatherData, false),
                 throwable -> {
                   if (liveWeather.getValue() == null)
-                    getExistingWeather(lat, lon);
+                    getExistingWeather(location.getLatitude(), location.getLongitude());
                   else
                     loading.postValue(false);
 
@@ -124,7 +138,6 @@ public class MainActivityViewModel extends ViewModel {
   private void onSuccess(WeatherData weatherData, boolean fromStorage) {
     liveWeather.postValue(weatherData);
     loading.postValue(false);
-    loaded.postValue(true);
 
     displayLastUpdatedMessage.postValue(!fromStorage ? null : applicationContext.getResources().getString(R.string.warning_last_fetched,
         weatherData.cityName,
@@ -132,7 +145,7 @@ public class MainActivityViewModel extends ViewModel {
         DateFormat.getMediumDateFormat(applicationContext).format(weatherData.lastFetched)));
 
     if (!fromStorage)
-      hideSnackBar.postValue(null);
+      clearError.postValue(null);
   }
 
   public String getWeatherIconUrl(String weatherDataIcon) {

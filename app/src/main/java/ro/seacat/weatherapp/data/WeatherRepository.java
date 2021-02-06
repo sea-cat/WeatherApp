@@ -31,6 +31,48 @@ public class WeatherRepository {
     this.translator = translator;
   }
 
+  // TODO properly use the repo
+  //  public Single<WeatherDataResponse> fetchData(Location location) {
+  //    if (location != null)
+  //      refreshWeatherData(53.0349, -5.6234);
+  //    else
+  //      refreshWeatherData();
+  //  }
+
+  //  private void refreshWeatherData(double lat, double lon) {
+  //    disposables.add(
+  //        getNetworkWeather(lat, lon)
+  //            .subscribe(
+  //                weatherData -> onSuccess(weatherData, false),
+  //                throwable -> {
+  //                  if (liveWeather.getValue() == null)
+  //                    getExistingWeather(lat, lon);
+  //                  else
+  //                    loading.postValue(false);
+  //
+  //                  displayError.postValue(throwable instanceof NoConnectivityException ? R.string.error_no_connectivity : R.string.error_download);
+  //                })
+  //    );
+  //  }
+  //
+  //  private void getExistingWeather(double lat, double lon) {
+  //    disposables.add(getStoredWeather(lat, lon)
+  //        .subscribe(
+  //            weatherData -> onSuccess(weatherData, true),
+  //            throwable -> loading.postValue(false)
+  //        )
+  //    );
+  //  }
+  //
+  //  private void getExistingWeather() {
+  //    disposables.add(getStoredWeather()
+  //        .subscribe(
+  //            weatherData -> onSuccess(weatherData, true),
+  //            throwable -> loading.postValue(false)
+  //        )
+  //    );
+  //  }
+
   public Maybe<WeatherData> getStoredWeather(double lat, double lon) {
     return getStoredWeather(weatherDao.findByLatLong(lat, lon));
   }
