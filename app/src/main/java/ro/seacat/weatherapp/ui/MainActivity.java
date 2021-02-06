@@ -27,20 +27,25 @@ public class MainActivity extends BaseActivity {
 
     viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
     viewModel.getDisplayError().observe(this, stringId -> showSnackBar(binding.container, stringId));
-    viewModel.getLiveWeather().observe(this, weatherData ->
-        Picasso.get()
-            .load(viewModel.getWeatherIconUrl(weatherData.icon))
-            .placeholder(R.drawable.animation_progress)
-            .error(R.drawable.ic_error)
-            .into(binding.icon)
-    );
+    viewModel.getLiveWeather().observe(this, weatherData -> loadIcon(weatherData.icon));
+    viewModel.getHideSnackBar().observe(this, nothing -> hideSnackBar());
+
 
     binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
     binding.setLifecycleOwner(this);
     binding.setViewModel(viewModel);
-    binding.fab.setOnClickListener(v -> checkLocationPermission());
+    binding.fab.setOnClickListener(v -> viewModel.populateView());
 
-    viewModel.refreshWeatherData();
+    viewModel.populateView();
+  }
+
+  private void loadIcon(String icon) {
+    Picasso.get()
+        .load(viewModel.getWeatherIconUrl(icon))
+        .fit()
+        .placeholder(R.drawable.animation_progress)
+        .error(R.drawable.ic_error)
+        .into(binding.icon);
   }
 
   @Override
@@ -53,7 +58,7 @@ public class MainActivity extends BaseActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
 
-    if (id == R.id.action_privacy_policy) {
+    if (R.id.action_privacy_policy == id) {
       final Intent openPrivacyPolicyWebIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.privacy_policy_url)));
 
       if (getPackageManager().queryIntentActivities(openPrivacyPolicyWebIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0)
@@ -64,7 +69,7 @@ public class MainActivity extends BaseActivity {
       return true;
     }
 
-    if (id == R.id.action_open_source_licences) {
+    if (R.id.action_open_source_licences == id) {
       showToast(R.string.menu_action_open_source_licences);
       return true;
     }

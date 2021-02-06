@@ -24,6 +24,7 @@ public abstract class BaseActivity extends AppCompatActivity {
   private static final String PACKAGE = "package";
 
   private Toast toast;
+  private Snackbar snackbar;
 
   protected void checkLocationPermission() {
     if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
@@ -93,14 +94,19 @@ public abstract class BaseActivity extends AppCompatActivity {
   }
 
   protected void showSnackBar(View view, int stringId) {
-    Snackbar snackbar = Snackbar.make(view, stringId, Snackbar.LENGTH_INDEFINITE);
+    snackbar = Snackbar.make(view, stringId, Snackbar.LENGTH_INDEFINITE);
     snackbar.setAction(R.string.dismiss, v -> snackbar.dismiss())
         .show();
   }
 
   protected void showSnackBar(View view, String string) {
-    Snackbar snackbar = Snackbar.make(view, string, Snackbar.LENGTH_INDEFINITE);
+    snackbar = Snackbar.make(view, string, Snackbar.LENGTH_INDEFINITE);
     snackbar.setAction(R.string.dismiss, v -> snackbar.dismiss())
         .show();
+  }
+
+  protected void hideSnackBar() {
+    if (snackbar != null)
+      snackbar.dismiss();
   }
 }

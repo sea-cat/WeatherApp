@@ -38,4 +38,8 @@ public class WeatherData {
 
   @ColumnInfo(name = "WE_LAST_FETCHED_DATE")
   public Date lastFetched;
+
+  public String getIcon() {
+    return icon;
+  }
 }

@@ -18,6 +18,7 @@
     <string name="error_download">An error has occurred while trying to fetch new data.\nPlease try again later or contact your administrator.</string>
     <string name="error_location_permission_needed">Please enable the location permission to load weather data.</string>
     <string name="error_not_available">n/a</string>
+    <string name="warning_last_fetched">"Last fetched for %s at %s on %s</string>
 
     <string name="value_degree_celsius">%1$d&#8451;</string>
     <string name="value_miles_per_hour">%1$dmph</string>

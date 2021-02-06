@@ -37,6 +37,8 @@ public class WeatherDataTranslator {
       weatherData.windDegrees = weatherRaw.getWind().getDegrees();
     }
 
+    weatherData.cityName = weatherRaw.getCityName();
+
     return weatherData;
   }
 }

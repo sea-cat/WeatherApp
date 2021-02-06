@@ -11,6 +11,9 @@ import ro.seacat.weatherapp.data.pojo.WeatherData;
 @Dao
 public interface WeatherDao {
 
+  @Query("SELECT * FROM WEATHER LIMIT 1")
+  Single<WeatherData> getData();
+
   @Query("SELECT * FROM WEATHER WHERE WE_LATITUDE LIKE :latitude AND WE_LONGITUDE LIKE :longitude LIMIT 1")
   Single<WeatherData> findByLatLong(double latitude, double longitude);
 
@@ -21,5 +24,5 @@ public interface WeatherDao {
   void empty();
 
   @Query("DELETE FROM WEATHER WHERE WE_LATITUDE = :latitude AND WE_LONGITUDE = :longitude")
-  void deleteByLatLong(String latitude, String longitude);
+  void deleteByLatLong(double latitude, double longitude);
 }
