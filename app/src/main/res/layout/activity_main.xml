@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="ro.seacat.weatherapp.ui.MainActivityViewModel" />
+            type="ro.seacat.weatherapp.viewmodels.MainActivityViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

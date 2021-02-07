@@ -1,4 +1,4 @@
-package ro.seacat.weatherapp.ui;
+package ro.seacat.weatherapp.common;
 
 import android.content.Context;
 import android.content.DialogInterface;

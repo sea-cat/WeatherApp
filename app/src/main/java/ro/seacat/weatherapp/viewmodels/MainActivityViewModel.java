@@ -1,11 +1,9 @@
-package ro.seacat.weatherapp.ui;
+package ro.seacat.weatherapp.viewmodels;
 
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.text.format.DateFormat;
-
-import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
@@ -23,8 +21,6 @@ import ro.seacat.weatherapp.data.pojo.WeatherData;
 
 @HiltViewModel
 public class MainActivityViewModel extends ViewModel {
-
-  private final static String LOCATION_FORMAT = "#0.####";
 
   private final WeatherRepository repository;
   private final Application applicationContext;
@@ -77,9 +73,6 @@ public class MainActivityViewModel extends ViewModel {
   public void fetchData(Location location) {
     loading.setValue(true);
 
-    if (location != null)
-      normaliseLocation(location);
-
     disposables.add(
         repository.fetchData(location)
             .subscribeOn(Schedulers.io())
@@ -106,11 +99,6 @@ public class MainActivityViewModel extends ViewModel {
 
     if (!fromStorage)
       clearError.postValue(null);
-  }
-
-  private void normaliseLocation(Location location) {
-    location.setLatitude(Double.parseDouble(new DecimalFormat(LOCATION_FORMAT).format(location.getLatitude())));
-    location.setLongitude(Double.parseDouble(new DecimalFormat(LOCATION_FORMAT).format(location.getLongitude())));
   }
 
   public String getWeatherIconUrl(String weatherDataIcon) {

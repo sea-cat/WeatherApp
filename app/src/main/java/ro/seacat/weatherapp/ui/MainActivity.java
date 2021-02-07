@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import dagger.hilt.android.AndroidEntryPoint;
 import ro.seacat.weatherapp.R;
 import ro.seacat.weatherapp.databinding.ActivityMainBinding;
+import ro.seacat.weatherapp.viewmodels.MainActivityViewModel;
 
 @AndroidEntryPoint
 public class MainActivity extends BaseActivity {
@@ -58,7 +59,10 @@ public class MainActivity extends BaseActivity {
     super.locationPermissionGranted();
     fusedLocationClient
         .getLastLocation()
-        .addOnFailureListener(this, e -> showSnackBar(binding.container, R.string.error_location_not_found))
+        .addOnFailureListener(this, e -> {
+          viewModel.fetchData(null);
+          showSnackBar(binding.container, R.string.error_location_not_found);
+        })
         .addOnSuccessListener(this, location -> {
           viewModel.fetchData(location);
           if (location == null)

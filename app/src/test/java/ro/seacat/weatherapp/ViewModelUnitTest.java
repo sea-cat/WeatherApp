@@ -14,7 +14,7 @@ import io.reactivex.Single;
 import ro.seacat.weatherapp.data.WeatherRepository;
 import ro.seacat.weatherapp.data.pojo.WeatherData;
 import ro.seacat.weatherapp.data.pojo.WeatherDataResponse;
-import ro.seacat.weatherapp.ui.MainActivityViewModel;
+import ro.seacat.weatherapp.viewmodels.MainActivityViewModel;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;

@@ -17,6 +17,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import ro.seacat.weatherapp.R;
+import ro.seacat.weatherapp.common.UIHelper;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
