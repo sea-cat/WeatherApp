@@ -60,7 +60,7 @@ public class MainActivity extends BaseActivity {
         .getLastLocation()
         .addOnFailureListener(this, e -> showSnackBar(binding.container, R.string.error_location_not_found))
         .addOnSuccessListener(this, location -> {
-          viewModel.populateView(location);
+          viewModel.fetchData(location);
           if (location == null)
             showSnackBar(binding.container, R.string.error_location_not_found);
         })
@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity {
   @Override
   protected void locationPermissionDenied() {
     super.locationPermissionDenied();
-    viewModel.populateView(null);
+    viewModel.fetchData(null);
   }
 
   @Override
