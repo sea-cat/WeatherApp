@@ -16,6 +16,7 @@ import io.reactivex.schedulers.Schedulers;
 import ro.seacat.weatherapp.R;
 import ro.seacat.weatherapp.api.NoConnectivityException;
 import ro.seacat.weatherapp.api.WeatherAPI;
+import ro.seacat.weatherapp.common.Utils;
 import ro.seacat.weatherapp.data.WeatherRepository;
 import ro.seacat.weatherapp.data.pojo.WeatherData;
 
@@ -24,6 +25,7 @@ public class MainActivityViewModel extends ViewModel {
 
   private final WeatherRepository repository;
   private final Application applicationContext;
+  private final Utils utils;
 
   private final MutableLiveData<WeatherData> liveWeather = new MutableLiveData<>();
   private final MutableLiveData<Bitmap> liveIcon = new MutableLiveData<>();
@@ -35,9 +37,10 @@ public class MainActivityViewModel extends ViewModel {
   private final CompositeDisposable disposables = new CompositeDisposable();
 
   @Inject
-  public MainActivityViewModel(WeatherRepository repository, Application applicationContext) {
+  public MainActivityViewModel(WeatherRepository repository, Application applicationContext, Utils utils) {
     this.repository = repository;
     this.applicationContext = applicationContext;
+    this.utils = utils;
   }
 
   public LiveData<WeatherData> getLiveWeather() {
@@ -92,10 +95,7 @@ public class MainActivityViewModel extends ViewModel {
       return;
 
     liveWeather.postValue(weatherData);
-    displayLastUpdatedMessage.postValue(!fromStorage ? null : applicationContext.getResources().getString(R.string.warning_last_fetched,
-        weatherData.cityName,
-        DateFormat.getTimeFormat(applicationContext).format(weatherData.lastFetched),
-        DateFormat.getMediumDateFormat(applicationContext).format(weatherData.lastFetched)));
+    displayLastUpdatedMessage.postValue(!fromStorage ? null : utils.formatWarning(applicationContext, weatherData));
 
     if (!fromStorage)
       clearError.postValue(null);

@@ -11,11 +11,10 @@ import javax.inject.Singleton;
 import io.reactivex.Single;
 import ro.seacat.weatherapp.BuildConfig;
 import ro.seacat.weatherapp.api.WeatherAPI;
+import ro.seacat.weatherapp.common.Utils;
 import ro.seacat.weatherapp.data.pojo.WeatherData;
 import ro.seacat.weatherapp.data.pojo.WeatherDataResponse;
 import ro.seacat.weatherapp.data.util.WeatherDataTranslator;
-
-import static ro.seacat.weatherapp.common.Utils.formatCoordinates;
 
 @Singleton
 public class WeatherRepository {
@@ -23,12 +22,14 @@ public class WeatherRepository {
   private final WeatherAPI weatherAPI;
   private final WeatherDao weatherDao;
   private final WeatherDataTranslator translator;
+  private final Utils utils;
 
   @Inject
-  public WeatherRepository(WeatherAPI weatherAPI, WeatherDao weatherDao, WeatherDataTranslator translator) {
+  public WeatherRepository(WeatherAPI weatherAPI, WeatherDao weatherDao, WeatherDataTranslator translator, Utils utils) {
     this.weatherAPI = weatherAPI;
     this.weatherDao = weatherDao;
     this.translator = translator;
+    this.utils = utils;
   }
 
   public Single<WeatherDataResponse> fetchData(Location location) {
@@ -36,8 +37,8 @@ public class WeatherRepository {
       return getStoredWeather()
           .onErrorResumeNext(throwable -> Single.just(new WeatherDataResponse(null, null, true)));
 
-    location.setLatitude(formatCoordinates(location.getLatitude()));
-    location.setLongitude(formatCoordinates(location.getLongitude()));
+    location.setLatitude(utils.formatCoordinates(location.getLatitude()));
+    location.setLongitude(utils.formatCoordinates(location.getLongitude()));
 
     return getNetworkWeather(location.getLatitude(), location.getLongitude())
         .onErrorResumeNext(
@@ -51,8 +52,8 @@ public class WeatherRepository {
         .map(weatherRaw -> {
           WeatherData weatherData = translator.translate(weatherRaw);
           weatherData.lastFetched = new Date();
-          weatherData.latitude = formatCoordinates(weatherData.latitude);
-          weatherData.longitude = formatCoordinates(weatherData.longitude);
+          weatherData.latitude = utils.formatCoordinates(weatherData.latitude);
+          weatherData.longitude = utils.formatCoordinates(weatherData.longitude);
 
           weatherDao.deleteByLatLong(weatherData.latitude, weatherData.longitude);
           weatherDao.insert(weatherData);
