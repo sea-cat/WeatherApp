@@ -32,7 +32,7 @@ public class WeatherRepository {
   public Single<WeatherDataResponse> fetchData(Location location) {
     if (location == null)
       return getStoredWeather()
-          .onErrorResumeNext(throwable -> Single.just(new WeatherDataResponse(null, throwable, true)));
+          .onErrorResumeNext(throwable -> Single.just(new WeatherDataResponse(null, null, true)));
 
     return getNetworkWeather(location.getLatitude(), location.getLongitude())
         .onErrorResumeNext(throwable ->

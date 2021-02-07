@@ -39,4 +39,6 @@
 
     <string name="location_permission_title">Location permission required</string>
     <string name="location_permission_rationale">This application needs your location permission to retrieve weather information that\'s relevant to you.\nPlease enable this permission.</string>
+
+    <string name="content_description_icon">weather icon</string>
 </resources>

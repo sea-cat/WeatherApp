@@ -1,95 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/weatherCard"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    android:layout_marginTop="56dp"
-    android:elevation="3dp"
-    android:padding="8dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <data>
+
+        <variable
+            name="viewModel"
+            type="ro.seacat.weatherapp.ui.MainActivityViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:visibility="@{viewModel.liveWeather != null}">
 
-        <LinearLayout
-            android:id="@+id/one"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/content_description_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:src="@{viewModel.liveIcon}"
+            tools:src="@drawable/ic_error" />
+
+
+        <TextView
+            android:id="@+id/currentLabel"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:text="@string/current_condition_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/current_condition_label" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Windy" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/two"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/currentValue"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/one"
-            android:padding="8dp">
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:lines="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@{viewModel.liveWeather.currentCondition}"
+            app:layout_constraintEnd_toStartOf="@+id/icon"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Windy" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/temperature_label" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="1 C" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/three"
-            android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/two"
-            android:padding="8dp">
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/wind_speed_label" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="20mph" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/four"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/temperatureLabel"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/three"
-            android:padding="8dp">
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="@string/temperature_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/currentLabel" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/wind_direction_label" />
+        <TextView
+            android:id="@+id/temperatureValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:lines="1"
+            app:layout_constraintEnd_toStartOf="@+id/icon"
+            app:layout_constraintStart_toEndOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/currentValue"
+            app:temperature="@{viewModel.liveWeather.temperature}"
+            tools:text="1 C" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="North East" />
-        </LinearLayout>
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/speedLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+
+            android:text="@string/wind_speed_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temperatureLabel" />
+
+        <TextView
+            android:id="@+id/speedValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_weight="1"
+            android:maxLines="1"
+            app:layout_constraintEnd_toStartOf="@+id/icon"
+            app:layout_constraintStart_toEndOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/temperatureValue"
+            app:speed="@{viewModel.liveWeather.windSpeed}"
+            tools:text="20mph" />
+
+
+        <TextView
+            android:id="@+id/directionLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="@string/wind_direction_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/speedLabel" />
+
+        <TextView
+            android:id="@+id/directionValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_weight="1"
+            app:layout_constraintEnd_toStartOf="@+id/icon"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/speedValue"
+            app:windDirection="@{viewModel.liveWeather.windDegrees}"
+            tools:text="North East" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -49,7 +49,7 @@ public class MainActivity extends BaseActivity {
         .fit()
         .placeholder(R.drawable.animation_progress)
         .error(R.drawable.ic_error)
-        .into(binding.icon);
+        .into(binding.constraint.icon);
   }
 
   @SuppressLint("MissingPermission")
