@@ -42,7 +42,7 @@ public class MainActivityViewModel extends ViewModel {
     this.applicationContext = applicationContext;
     this.utils = utils;
 
-    noData.postValue(applicationContext.getResources().getString(R.string.message_loading));
+    noData.setValue(applicationContext.getResources().getString(R.string.message_loading));
   }
 
   public LiveData<WeatherData> getLiveWeather() {

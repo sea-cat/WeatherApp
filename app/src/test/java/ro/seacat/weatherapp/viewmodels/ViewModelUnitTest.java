@@ -1,6 +1,7 @@
 package ro.seacat.weatherapp.viewmodels;
 
 import android.app.Application;
+import android.content.res.Resources;
 import android.location.Location;
 
 import org.junit.Before;
@@ -15,6 +16,7 @@ import io.reactivex.Single;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
+import ro.seacat.weatherapp.R;
 import ro.seacat.weatherapp.common.Utils;
 import ro.seacat.weatherapp.data.WeatherRepository;
 import ro.seacat.weatherapp.data.pojo.WeatherData;
@@ -39,16 +41,18 @@ public class ViewModelUnitTest {
 
   private final WeatherRepository weatherRepositoryMock = mock(WeatherRepository.class);
   private final Application appContextMock = mock(Application.class);
-  private final Location location = mock(Location.class);
-  private final Utils utils = mock(Utils.class);
+  private final Location locationMock = mock(Location.class);
+  private final Utils utilsMock = mock(Utils.class);
+  private final Resources resourcesMock = mock(Resources.class);
   private int loadingStateChanged;
 
   private final Observer<WeatherData> liveWeatherObserver = mock(Observer.class);
   private final Observer<Integer> errorObserver = mock(Observer.class);
-  private final Observer<String> displayLastUpdatedMessage = mock(Observer.class);
+  private final Observer<String> displayLastUpdatedMessageObserver = mock(Observer.class);
   private final Observer<Boolean> loadingObserver = mock(Observer.class);
+  private final Observer<String> noDataObserver = mock(Observer.class);
 
-  private final MainActivityViewModel subject = new MainActivityViewModel(weatherRepositoryMock, appContextMock, utils);
+  private MainActivityViewModel subject;
 
   @BeforeClass
   public static void setUpScheduler() {
@@ -60,11 +64,17 @@ public class ViewModelUnitTest {
   @Before
   public void setUp() {
     loadingStateChanged = 0;
+    when(appContextMock.getResources()).thenReturn(resourcesMock);
+    when(resourcesMock.getString(R.string.message_loading)).thenReturn("loading");
+    when(resourcesMock.getString(R.string.error_no_relevant_data)).thenReturn("error");
+
+    subject = new MainActivityViewModel(weatherRepositoryMock, appContextMock, utilsMock);
 
     subject.getLiveWeather().observeForever(liveWeatherObserver);
     subject.getDisplayError().observeForever(errorObserver);
-    subject.getDisplayLastUpdatedMessage().observeForever(displayLastUpdatedMessage);
+    subject.getDisplayLastUpdatedMessage().observeForever(displayLastUpdatedMessageObserver);
     subject.getLoading().observeForever(loadingObserver);
+    subject.getNoData().observeForever(noDataObserver);
   }
 
   @Test
@@ -83,16 +93,17 @@ public class ViewModelUnitTest {
     subject.fetchData(null);
 
     verifyNoInteractions(liveWeatherObserver);
+    verify(noDataObserver).onChanged("error");
     verifyNoInteractions(errorObserver);
     assertEquals(2, loadingStateChanged);
-    verifyNoInteractions(displayLastUpdatedMessage);
+    verifyNoInteractions(displayLastUpdatedMessageObserver);
   }
 
   @Test
   public void fetchData_WithLocationNoNetworkAndDataInStorage_ShouldUpdateUIAndShowError() {
     WeatherData weatherData = new WeatherData();
-    when(weatherRepositoryMock.fetchData(location)).thenReturn(Single.just(new WeatherDataResponse(weatherData, new Throwable(), true)));
-    when(utils.formatWarning(appContextMock, weatherData)).thenReturn("text");
+    when(weatherRepositoryMock.fetchData(locationMock)).thenReturn(Single.just(new WeatherDataResponse(weatherData, new Throwable(), true)));
+    when(utilsMock.formatWarning(appContextMock, weatherData)).thenReturn("text");
     doAnswer((Answer<Boolean>) invocation -> {
       loadingStateChanged++;
       assertTrue(invocation.getArgument(0));
@@ -103,19 +114,20 @@ public class ViewModelUnitTest {
       return true;
     }).when(loadingObserver).onChanged(any());
 
-    subject.fetchData(location);
+    subject.fetchData(locationMock);
 
     verify(liveWeatherObserver).onChanged(weatherData);
     verify(errorObserver).onChanged(anyInt());
+    verify(noDataObserver).onChanged("loading");
     assertEquals(2, loadingStateChanged);
-    verify(displayLastUpdatedMessage).onChanged(anyString());
+    verify(displayLastUpdatedMessageObserver).onChanged(anyString());
   }
 
   @Test
   public void fetchData_WithLocationAndNetwork_ShouldUpdateUI() {
     WeatherData weatherData = new WeatherData();
-    when(weatherRepositoryMock.fetchData(location)).thenReturn(Single.just(new WeatherDataResponse(weatherData, null, false)));
-    when(utils.formatWarning(appContextMock, weatherData)).thenReturn("text");
+    when(weatherRepositoryMock.fetchData(locationMock)).thenReturn(Single.just(new WeatherDataResponse(weatherData, null, false)));
+    when(utilsMock.formatWarning(appContextMock, weatherData)).thenReturn("text");
     doAnswer((Answer<Boolean>) invocation -> {
       loadingStateChanged++;
       assertTrue(invocation.getArgument(0));
@@ -126,12 +138,13 @@ public class ViewModelUnitTest {
       return true;
     }).when(loadingObserver).onChanged(any());
 
-    subject.fetchData(location);
+    subject.fetchData(locationMock);
 
     verify(liveWeatherObserver).onChanged(weatherData);
     verifyNoInteractions(errorObserver);
+    verify(noDataObserver).onChanged("loading");
     assertEquals(2, loadingStateChanged);
-    verify(displayLastUpdatedMessage).onChanged(null);
+    verify(displayLastUpdatedMessageObserver).onChanged(null);
   }
 
 
