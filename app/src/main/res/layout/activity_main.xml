@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="24dp"
-                    android:text="@string/error_no_relevant_data"
+                    android:text="@{viewModel.noData, default=@string/message_loading}"
                     android:textSize="16sp"
                     android:visibility="@{viewModel.liveWeather == null, default=gone}" />
 

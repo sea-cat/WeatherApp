@@ -30,6 +30,7 @@ public class MainActivityViewModel extends ViewModel {
   private final MutableLiveData<Bitmap> liveIcon = new MutableLiveData<>();
   private final MutableLiveData<Integer> displayError = new MutableLiveData<>();
   private final MutableLiveData<String> displayLastUpdatedMessage = new MutableLiveData<>();
+  private final MutableLiveData<String> noData = new MutableLiveData<>();
   private final MutableLiveData<Void> clearError = new MutableLiveData<>();
   private final MutableLiveData<Boolean> loading = new MutableLiveData<>(true);
 
@@ -40,6 +41,8 @@ public class MainActivityViewModel extends ViewModel {
     this.repository = repository;
     this.applicationContext = applicationContext;
     this.utils = utils;
+
+    noData.postValue(applicationContext.getResources().getString(R.string.message_loading));
   }
 
   public LiveData<WeatherData> getLiveWeather() {
@@ -56,6 +59,10 @@ public class MainActivityViewModel extends ViewModel {
 
   public LiveData<String> getDisplayLastUpdatedMessage() {
     return displayLastUpdatedMessage;
+  }
+
+  public LiveData<String> getNoData() {
+    return noData;
   }
 
   public LiveData<Void> getClearError() {
@@ -90,8 +97,10 @@ public class MainActivityViewModel extends ViewModel {
 
   private void onResponse(WeatherData weatherData, boolean fromStorage) {
     loading.postValue(false);
-    if (weatherData == null)
+    if (weatherData == null) {
+      noData.postValue(applicationContext.getResources().getString(R.string.error_no_relevant_data));
       return;
+    }
 
     liveWeather.postValue(weatherData);
     displayLastUpdatedMessage.postValue(!fromStorage ? null : utils.formatWarning(applicationContext, weatherData));

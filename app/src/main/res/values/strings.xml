@@ -12,6 +12,8 @@
     <string name="wind_direction_label">Wind Direction :</string>
     <string name="refresh_label">Refresh</string>
 
+    <string name="message_loading">Loading your data</string>
+
     <string name="error_no_relevant_data">There is no previous data available.\nRefresh to get the latest.</string>
     <string name="error_unable_to_load_link">Unable to load link</string>
     <string name="error_no_connectivity">You are offline. Please check your network connection and try again.</string>
