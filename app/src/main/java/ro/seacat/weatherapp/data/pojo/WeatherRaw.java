@@ -55,13 +55,17 @@ public class WeatherRaw {
     this.cityName = cityName;
   }
 
-  public class Wind {
+  public static class Wind {
 
     @SerializedName("speed")
     private Double speed;
 
     @SerializedName("deg")
     private Double degrees;
+
+    public Wind() {
+
+    }
 
     public Wind(Double speed, Double degrees) {
       this.speed = speed;
@@ -85,13 +89,16 @@ public class WeatherRaw {
     }
   }
 
-  public class Coordinates {
+  public static class Coordinates {
 
     @SerializedName("lat")
     public Double latitude;
 
     @SerializedName("lon")
     public Double longitude;
+
+    public Coordinates() {
+    }
 
     public Coordinates(Double latitude, Double longitude) {
       this.latitude = latitude;
@@ -115,7 +122,7 @@ public class WeatherRaw {
     }
   }
 
-  public class Weather {
+  public static class Weather {
 
     @SerializedName("main")
     private String currentCondition;
@@ -143,10 +150,13 @@ public class WeatherRaw {
     }
   }
 
-  public class Temperature {
+  public static class Temperature {
 
     @SerializedName("temp")
     private Double temperature;
+
+    public Temperature() {
+    }
 
     public Temperature(Double temperature) {
       this.temperature = temperature;

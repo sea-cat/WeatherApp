@@ -51,9 +51,6 @@ public class WeatherRepository {
     return weatherAPI.getByLatLong(lat, lon, BuildConfig.OPEN_WEATHER_KEY, WeatherAPI.UNIT)
         .map(weatherRaw -> {
           WeatherData weatherData = translator.translate(weatherRaw);
-          weatherData.lastFetched = new Date();
-          weatherData.latitude = utils.formatCoordinates(weatherData.latitude);
-          weatherData.longitude = utils.formatCoordinates(weatherData.longitude);
 
           weatherDao.deleteByLatLong(weatherData.latitude, weatherData.longitude);
           weatherDao.insert(weatherData);

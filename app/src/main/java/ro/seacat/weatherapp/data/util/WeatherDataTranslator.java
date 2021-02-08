@@ -1,16 +1,22 @@
 package ro.seacat.weatherapp.data.util;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import ro.seacat.weatherapp.common.Utils;
 import ro.seacat.weatherapp.data.pojo.WeatherData;
 import ro.seacat.weatherapp.data.pojo.WeatherRaw;
 
 @Singleton
 public class WeatherDataTranslator {
 
+  private final Utils utils;
+
   @Inject
-  public WeatherDataTranslator() {
+  public WeatherDataTranslator(Utils utils) {
+    this.utils = utils;
   }
 
   public WeatherData translate(WeatherRaw weatherRaw) {
@@ -19,8 +25,8 @@ public class WeatherDataTranslator {
 
     WeatherData weatherData = new WeatherData();
     if (weatherRaw.getCoordinates() != null) {
-      weatherData.longitude = weatherRaw.getCoordinates().getLongitude();
-      weatherData.latitude = weatherRaw.getCoordinates().getLatitude();
+      weatherData.latitude = utils.formatCoordinates(weatherRaw.getCoordinates().getLatitude());
+      weatherData.longitude = utils.formatCoordinates(weatherRaw.getCoordinates().getLongitude());
     }
 
     if (weatherRaw.getWeather() != null && !weatherRaw.getWeather().isEmpty()) {
@@ -38,6 +44,7 @@ public class WeatherDataTranslator {
     }
 
     weatherData.cityName = weatherRaw.getCityName();
+    weatherData.lastFetched = new Date();
 
     return weatherData;
   }

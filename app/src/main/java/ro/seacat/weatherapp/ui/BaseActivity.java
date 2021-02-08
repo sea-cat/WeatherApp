@@ -43,10 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     UIHelper.createDialog(this,
         R.string.location_permission_title, R.string.location_permission_rationale,
         (dialog, which) -> createLocationPermissionRequest(),
-        (dialog, which) -> {
-          locationPermissionDenied();
-          dialog.dismiss();
-        });
+        (dialog, which) -> locationPermissionDenied());
   }
 
   private void createLocationPermissionRequest() {
@@ -90,21 +87,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     toast.show();
   }
 
-  protected void showToast(String string) {
-    if (toast != null)
-      toast.cancel();
-    toast = Toast.makeText(this, string, Toast.LENGTH_LONG);
-    toast.show();
-  }
-
   protected void showSnackBar(View view, int stringId) {
     snackbar = Snackbar.make(view, stringId, Snackbar.LENGTH_INDEFINITE);
-    snackbar.setAction(R.string.dismiss, v -> snackbar.dismiss())
-        .show();
-  }
-
-  protected void showSnackBar(View view, String string) {
-    snackbar = Snackbar.make(view, string, Snackbar.LENGTH_INDEFINITE);
     snackbar.setAction(R.string.dismiss, v -> snackbar.dismiss())
         .show();
   }
