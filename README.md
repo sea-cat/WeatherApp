@@ -11,7 +11,7 @@ This application uses the **OpenWeatherMap API** to fetch the latest weather bas
 
 The call is made to this API for the data
 
->    http://api.openweathermap.org/data/2.5/weather/?q=belfast,uk&APPID=OPEN_WEATHER_KEY&units=metric
+>    http://api.openweathermap.org/data/2.5/weather/?lat=LATITUDE&lon=LONGITUDE&APPID=OPEN_WEATHER_KEY&units=metric
 
 And this one for the images
 
