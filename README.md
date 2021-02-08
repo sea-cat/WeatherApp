@@ -9,9 +9,18 @@ This application uses the **OpenWeatherMap API** to fetch the latest weather bas
 
 `OPEN_WEATHER_KEY="yourapikeyhere"`
 
+The call is made to this API for the data
+
+>    http://api.openweathermap.org/data/2.5/weather/?q=belfast,uk&APPID=OPEN_WEATHER_KEY&units=metric
+
+And this one for the images
+
+>    http://openweathermap.org/img/w/icon.png
+
+
 ## Components
 
-The project uses an MVVM architecture with a Repository for clear separation of concerns. It uses **Retrofit** for its network calls, **Room** for data persistance, **DataBinding** for a responsive UI, **LiveData** for lifecycle-aware data updates, **RxJava** for a clean thread work and **Dagger Hilt** for dependency injection.
+The project uses an **MVVM** architecture with a **Repository** for clear separation of concerns. It uses **Retrofit** for its network calls, **Picasso** for image loading and offiline caching, **Room** for data persistance, **DataBinding** for a responsive UI, **LiveData** for lifecycle-aware data updates, **RxJava** for a clean thread work and **Dagger Hilt** for dependency injection.
  
 ### Location
 It will first ask for the **location permission** from the user, having several fallbacks in case it is not clear for the user what the permission is for. Even if the user permanently denies the permission, there will be a Snackbar present with a link to the settings where they can manually enable the permission. The application will not fetch data from the openWeatherMap API without a location. 
@@ -21,7 +30,7 @@ It will first ask for the **location permission** from the user, having several 
 ### Network and Storage
 After the device acquires the location, using Retrofit, a call will be made to the OpenWeatherMap API. If the call is successful, the data is deserialised and displayed to the user, but it will also have the current date and time attached to it, and will be saved in the DB.
 
-If the network call was unsuccessfull because of a lack of data connectivity, a Snackbar with a relevant message will appear, otherwise a generic message will apear. After a failed network attempt, as a backup, a Room call is made to the DB to get the stored information and display it. There is a filter on the db call, to only return data that is less than 24 hours old. If there is data, but older than required, then that data is purged form the db.
+If the network call was unsuccessful because of a lack of data connectivity, a Snackbar with a relevant message will appear, otherwise a generic message will apear. After a failed network attempt, as a backup, a Room call is made to the DB to get the stored information and display it. There is a filter on the db call, to only return data that is less than 24 hours old. If there is data, but older than required, then that data is purged form the db.
 
 A call to the database can be made either with a known location or with no location (in case the user turns off their location after data was acquired). Whenever storage data is displayed, there will be a message above it, stating the city, date and time it was acquired.
 
