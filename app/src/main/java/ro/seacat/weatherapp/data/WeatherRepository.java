@@ -73,7 +73,8 @@ public class WeatherRepository {
   private Single<WeatherDataResponse> getStoredWeather(Single<WeatherData> weatherDataSingle) {
     return weatherDataSingle
         .filter(weatherData -> {
-          boolean isValid = TimeUnit.HOURS.convert(Math.abs(new Date().getTime() - weatherData.lastFetched.getTime()), TimeUnit.MILLISECONDS) <= 24;
+          boolean isValid = TimeUnit.HOURS.convert(Math.abs(new Date().getTime() - weatherData.lastFetched.getTime()), TimeUnit.MILLISECONDS) < 24;
+
           if (!isValid)
             weatherDao.deleteByLatLong(weatherData.latitude, weatherData.longitude);
           return isValid;

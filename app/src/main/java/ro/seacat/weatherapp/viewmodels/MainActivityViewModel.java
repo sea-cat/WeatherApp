@@ -3,7 +3,6 @@ package ro.seacat.weatherapp.viewmodels;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.text.format.DateFormat;
 
 import javax.inject.Inject;
 
